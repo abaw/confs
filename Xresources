@@ -1,0 +1,19 @@
+Emacs.font: DejaVu Sans Mono-16
+
+! XTERM
+! xterm*font: -*-fixed-medium-r-normal--18-*
+xterm*faceName: DejaVu Sans Mono
+xterm*faceNameDoublesize: AR PL UMing TW
+xterm*scrollbar: True
+xterm*background: grey77
+xterm*foreground: black
+xterm*metaSendsEscape: True
+
+! for rxvt
+URxvt*font: xft:DejaVu Sans Mono,xft:AR PL UMing TW
+URxvt*scrollbar: True
+URxvt*background: grey77
+URxvt*foreground: black
+URxvt*meta8: False
+URxvt*scrollBar: False
+URxvt*color10: Green4
