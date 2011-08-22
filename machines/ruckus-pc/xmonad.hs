@@ -78,12 +78,17 @@ scratchpad = scratchpadSpawnActionTerminal myTerminal
 
 
 updateLastWindow =
-    do withTaggedGlobal "last-window" (delTag "last-window")
-       withTaggedGlobal "current-window" currentToLast
-       withFocused (addTag "current-window")
-           where currentToLast w =
-                     do
-                       delTag "current-window" w
-                       addTag "last-window" w
+    withFocused handleFocused
+    where handleFocused f = do
+            name <- runQuery appName f
+            hasTag "current-window" f >>= (handleHasTag f)
+          handleHasTag _ True = return ()
+          handleHasTag focused False =
+              withTaggedGlobal "last-window" (delTag "last-window") >>
+              withTaggedGlobal "current-window" currentToLast >>
+              addTag "current-window" focused
+              where currentToLast w =
+                        delTag "current-window" w >>
+                        addTag "last-window" w
 
 focusLastWindow = focusUpTaggedGlobal "last-window"
