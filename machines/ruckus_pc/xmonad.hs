@@ -2,6 +2,7 @@ import System.Process (system)
 import System.IO
 import XMonad
 import XMonad.Core
+import XMonad.Prompt
 import qualified XMonad.StackSet as W
 import XMonad.Config.Gnome
 import XMonad.Actions.CycleRecentWS
@@ -9,6 +10,7 @@ import XMonad.Actions.WindowGo
 import XMonad.Actions.CycleWS
 import XMonad.Actions.WindowBringer
 import XMonad.Actions.GridSelect
+import XMonad.Actions.TagWindows
 import XMonad.Util.EZConfig
 import XMonad.Util.Scratchpad
 import XMonad.Util.Run
@@ -21,8 +23,8 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
 
+
 main = do
-  -- withFile "/tmp/x.log" AppendMode $ \tmpFile ->
   xmonad $ withUrgencyHook NoUrgencyHook
          $ gnomeConfig
        { modMask = mod5Mask
@@ -31,6 +33,7 @@ main = do
        , focusFollowsMouse = False
        , workspaces = ["1","2","3","4","5-im","6","7","8"]
        , layoutHook = myLayoutHook
+       , logHook = updateLastWindow
        -- , logHook = dynamicLogWithPP xmobarPP
        --             { ppOutput = appendFile "/tmp/x.log"
        --             , ppTitle = xmobarColor "green" "" . shorten 50
@@ -48,7 +51,7 @@ myKeyBindings =
     , ("M-w", gotoMenu)
     , ("M-S-w", bringMenu)
     , ("M-u", focusUrgent)
-    -- , ("M-/"), nextMatch History (return True)
+    , ("M-/", focusLastWindow)
     ]
 
 myLayoutHook =  avoidStruts $ onWorkspace "5-im" imLayout standardLayout
@@ -69,3 +72,15 @@ dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =
 scratchpad = scratchpadSpawnActionTerminal myTerminal
 
 -- drawOnFocusWindow = gets windowset >>= peek
+
+
+updateLastWindow =
+    do withTaggedGlobal "last-window" (delTag "last-window")
+       withTaggedGlobal "current-window" currentToLast
+       withFocused (addTag "current-window")
+           where currentToLast w =
+                     do
+                       delTag "current-window" w
+                       addTag "last-window" w
+
+focusLastWindow = focusUpTaggedGlobal "last-window"
