@@ -1,3 +1,4 @@
+import Control.Monad
 import System.Process (system)
 import System.IO
 import XMonad
@@ -80,13 +81,12 @@ scratchpad = scratchpadSpawnActionTerminal myTerminal
 updateLastWindow =
     withFocused handleFocused
     where handleFocused f = do
-            name <- runQuery appName f
-            hasTag "current-window" f >>= (handleHasTag f)
-          handleHasTag _ True = return ()
-          handleHasTag focused False =
-              withTaggedGlobal "last-window" (delTag "last-window") >>
-              withTaggedGlobal "current-window" currentToLast >>
-              addTag "current-window" focused
+            sameWindow <- hasTag "current-window" f
+            unless sameWindow (updateTags f)
+          updateTags focused =
+              do withTaggedGlobal "last-window" (delTag "last-window")
+                 withTaggedGlobal "current-window" currentToLast
+                 addTag "current-window" focused
               where currentToLast w =
                         delTag "current-window" w >>
                         addTag "last-window" w
