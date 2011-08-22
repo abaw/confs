@@ -65,7 +65,10 @@ myManageHook = composeAll
 
 -- applications
 myTerminal = "urxvtc"
-emacs = runOrRaise "emacs" (className =? "Emacs")
+emacs = ifWindows emacsQuery raiseNextEmacs runEmacs
+        where emacsQuery = (className =? "Emacs")
+              raiseNextEmacs _ = raiseNext emacsQuery
+              runEmacs = safeSpawnProg "emacs"
 opera = runOrRaise "opera" (className =? "Opera")
 chrome = runOrRaise "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
