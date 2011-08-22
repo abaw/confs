@@ -32,6 +32,8 @@ install_conf()
     src=$machine_dir/$1
     dst=$2
 
+    test -f $src || return 0
+
     # two files are the same, do nothing
     test $(readlink_r $src) = $(readlink_r $dst) && { echo $src and $dst are the same file;return 0; }
 
