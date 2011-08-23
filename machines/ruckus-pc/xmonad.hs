@@ -66,12 +66,9 @@ myManageHook = composeAll
 
 -- applications
 myTerminal = "urxvtc"
-emacs = ifWindows emacsQuery raiseNextEmacs runEmacs
-        where emacsQuery = (className =? "Emacs")
-              raiseNextEmacs _ = raiseNext emacsQuery
-              runEmacs = safeSpawnProg "emacs"
-opera = runOrRaise "opera" (className =? "Opera")
-chrome = runOrRaise "google-chrome" (className =? "Google-chrome")
+emacs = runOrRaiseNext "emacs" (className =? "Emacs")
+opera = runOrRaiseNext "opera" (className =? "Opera")
+chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
 scratchpad = scratchpadSpawnActionTerminal myTerminal
 
