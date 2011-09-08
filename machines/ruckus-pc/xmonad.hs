@@ -12,6 +12,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.WindowBringer
 import XMonad.Actions.GridSelect
 import XMonad.Actions.TagWindows
+import XMonad.Actions.Submap
 import XMonad.Util.EZConfig
 import XMonad.Util.Scratchpad
 import XMonad.Util.Run
@@ -27,7 +28,9 @@ import XMonad.Hooks.UrgencyHook
 
 main = do
   xmonad $ withUrgencyHook NoUrgencyHook
-         $ gnomeConfig
+         $ myConfig
+
+myConfig = gnomeConfig
        { modMask = mod5Mask
        , terminal = myTerminal
        , manageHook = myManageHook
@@ -53,7 +56,17 @@ myKeyBindings =
     , ("M-S-w", bringMenu)
     , ("M-u", focusUrgent)
     , ("M-/", focusLastWindow)
+    , ("<F20>", mySubmap)
     ]
+
+mySubmap = submap $ mkKeymap myConfig
+           [ ("<F20>", focusLastWindow)
+           , ("e", emacs)
+           , ("b", opera)
+           , ("S-b", chrome)
+           , ("c", dedicateTerm)
+           , ("C-g", return ())
+           ]
 
 myLayoutHook =  avoidStruts $ onWorkspace "5-im" imLayout standardLayout
                where
