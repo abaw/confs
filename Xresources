@@ -10,7 +10,7 @@ xterm*foreground: black
 xterm*metaSendsEscape: True
 
 ! for rxvt
-URxvt*font: xft:DejaVu Sans Mono,xft:AR PL UMing TW
+URxvt*font: xft:DejaVu Sans Mono-14,xft:AR PL UMing TW-14
 URxvt*scrollbar: True
 URxvt*background: grey77
 URxvt*foreground: black
