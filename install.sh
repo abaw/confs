@@ -48,7 +48,7 @@ install_conf()
 }
 
 
-for dot_file in tmux.conf vimrc Xmodmap Xresources
+for dot_file in tmux.conf vimrc ackrc Xmodmap Xresources
 do
     install_conf $dot_file ~/.$dot_file
 done
