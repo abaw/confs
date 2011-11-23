@@ -22,7 +22,8 @@ which realpath>/dev/null || die need "realpath" program to run
 
 machine=$1
 test -z $machine && die "Usage: $0 <machine>"
-machine_dir=$(realpath $(dirname $0)/machines/$machine)
+top_dir=$(dirname $0)
+machine_dir=$(realpath $top_dir/machines/$machine)
 test -d $machine_dir || die "invalid machine:'$machine'"
 
 install_conf()
@@ -48,9 +49,12 @@ install_conf()
 }
 
 
-for dot_file in tmux.conf vimrc ackrc Xmodmap Xresources
+for dot_file in $(\ls $top_dir/dotfiles)
 do
     install_conf $dot_file ~/.$dot_file
 done
 
-install_conf xmonad.hs ~/.xmonad/xmonad.hs
+if test -f $machine_dir/install.sh; then
+    . $machine_dir/install.sh
+fi
+
