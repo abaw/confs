@@ -37,16 +37,25 @@ cde_get_bookmark () {
     cde_elisp_eval <<EOF
 $CDE_ELISP_COMMON
 (let ((location (bookmark-location "$name")))
-  (if location (princ location)))
+  (if (and location (dir-p location))
+      (princ location)))
 EOF
 }
 
 # cd to bookmark
 cde () {
     local name="$1"
+    [ -z "$name" ] && { echo no bookmark name given;return 1;}
+
+
     local path=$(cde_get_bookmark $name)
     eval path=$path
-    [ -n "$path" ] && cd $path
+    if [ -z "$path" ]; then
+	echo no such bookmark: $name
+	return 1
+    else
+	cd $path
+    fi
 }
 
 _cde () {
