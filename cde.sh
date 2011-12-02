@@ -48,13 +48,13 @@ cde () {
     [ -z "$name" ] && { echo no bookmark name given;return 1;}
 
 
-    local path=$(cde_get_bookmark $name)
-    eval path=$path
-    if [ -z "$path" ]; then
+    local path_=$(cde_get_bookmark $name)
+    eval path_=$path_
+    if [ -z "$path_" ]; then
 	echo no such bookmark: $name
 	return 1
     else
-	cd $path
+	cd $path_
     fi
 }
 
