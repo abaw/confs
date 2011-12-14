@@ -14,7 +14,7 @@ import XMonad.Actions.GridSelect
 import XMonad.Actions.TagWindows
 import XMonad.Actions.Submap
 import XMonad.Util.EZConfig
-import XMonad.Util.Scratchpad
+import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 import XMonad.Layout
 import XMonad.Layout.PerWorkspace
@@ -51,6 +51,7 @@ myKeyBindings =
     , ("M-S-b", chrome)
     , ("M-c", dedicateTerm)
     , ("M-s", scratchpad)
+    , ("M-d", namedScratchpadAction myScratchpads "dict")
     , ("M-\\", nextScreen)
     , ("M-w", gotoMenu)
     , ("M-S-w", bringMenu)
@@ -75,7 +76,7 @@ myLayoutHook =  avoidStruts $ onWorkspace "5-im" imLayout standardLayout
 
 myManageHook = composeAll
                [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
-               ] <+> scratchpadManageHookDefault <+> manageHook gnomeConfig
+               ] <+> namedScratchpadManageHook myScratchpads <+> manageHook gnomeConfig
 
 -- applications
 myTerminal = "urxvtc"
@@ -83,7 +84,7 @@ emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 opera = runOrRaiseNext "opera" (className =? "Opera")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
-scratchpad = scratchpadSpawnActionTerminal myTerminal
+scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 
 -- drawOnFocusWindow = gets windowset >>= peek
 
@@ -102,3 +103,11 @@ updateLastWindow =
                         addTag "last-window" w
 
 focusLastWindow = focusUpTaggedGlobal "last-window"
+
+-- scratchpads
+myScratchpads =
+    [
+     NS "dict" "conkeror" (className =? "Conkeror") largeFloating,
+     NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") nonFloating
+    ] where
+    largeFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
