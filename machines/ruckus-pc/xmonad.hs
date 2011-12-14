@@ -107,7 +107,8 @@ focusLastWindow = focusUpTaggedGlobal "last-window"
 -- scratchpads
 myScratchpads =
     [
-     NS "dict" "conkeror" (className =? "Conkeror") largeFloating,
-     NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") nonFloating
+     NS "dict" "conkeror" (className =? "Conkeror") bigFloating,
+     NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating
     ] where
-    largeFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
+    bigFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
+    wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
