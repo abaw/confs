@@ -1,4 +1,5 @@
 Emacs.font: DejaVu Sans Mono-16
+Emacs*useXIM: false
 
 ! XTERM
 ! xterm*font: -*-fixed-medium-r-normal--18-*
