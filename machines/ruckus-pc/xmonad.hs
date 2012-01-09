@@ -1,6 +1,7 @@
 import Control.Monad
 import System.Process (system)
 import System.IO
+import Data.List (isPrefixOf)
 import XMonad
 import XMonad.Core
 import XMonad.Prompt
@@ -20,10 +21,13 @@ import XMonad.Layout
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.IM
 import XMonad.Layout.NoBorders
+import XMonad.Layout.SimpleDecoration
+import XMonad.Layout.Accordion
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
+
 
 
 main = do
@@ -35,7 +39,7 @@ myConfig = gnomeConfig
        , terminal = myTerminal
        , manageHook = myManageHook
        , focusFollowsMouse = False
-       , workspaces = ["1","2","3","4","5-im","6","7","8"]
+       , workspaces = ["1","2","3","4","5-im","6-info","7","8"]
        , layoutHook = myLayoutHook
        , logHook = updateLastWindow
        -- , logHook = dynamicLogWithPP xmobarPP
@@ -69,18 +73,25 @@ mySubmap = submap $ mkKeymap myConfig
            , ("C-g", return ())
            ]
 
-myLayoutHook =  avoidStruts $ onWorkspace "5-im" imLayout standardLayout
+myLayoutHook =  avoidStruts $
+                onWorkspace "5-im" imLayout $ -- for im applications
+                onWorkspace "6-info" infoLayout $ -- for emacs info frames
+                standardLayout
                where
                  standardLayout = smartBorders $ layoutHook gnomeConfig
                  imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
+                 infoLayout = simpleDeco shrinkText defaultTheme Accordion
+
 
 myManageHook = composeAll
-               [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
+               [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5),
+                 isInfoWindow --> doShift "6-info"
                ] <+> namedScratchpadManageHook myScratchpads <+> manageHook gnomeConfig
 
 -- applications
 myTerminal = "urxvtc"
-emacs = runOrRaiseNext "emacs" (className =? "Emacs")
+emacs = runOrRaiseNext "emacs" $ className =? "Emacs" <&&> fmap not isInfoWindow
+
 opera = runOrRaiseNext "opera" (className =? "Opera")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
@@ -112,3 +123,8 @@ myScratchpads =
     ] where
     bigFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
     wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
+
+
+-- | test if we have a emacs info frame
+isInfoWindow :: Query Bool
+isInfoWindow = fmap (isPrefixOf "abaw:INFO:") title
