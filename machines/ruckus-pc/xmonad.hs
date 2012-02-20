@@ -64,14 +64,16 @@ myKeyBindings =
     , ("<F20>", mySubmap)
     ]
 
-mySubmap = submap $ mkKeymap myConfig
+sharedKeyBindgs = do
+  (x,y) <- myKeyBindings
+  case x of
+    'M': '-' : otherKeys -> return (otherKeys,y)
+    _ -> mzero
+
+mySubmap = submap $ mkKeymap myConfig $
            [ ("<F20>", focusLastWindow)
-           , ("e", emacs)
-           , ("b", opera)
-           , ("S-b", chrome)
-           , ("c", dedicateTerm)
            , ("C-g", return ())
-           ]
+           ] ++ sharedKeyBindgs
 
 myLayoutHook =  avoidStruts $
                 onWorkspace "5-im" imLayout $ -- for im applications
