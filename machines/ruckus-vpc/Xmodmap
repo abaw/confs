@@ -1,1 +1,2 @@
-add mod5 = Print
+keycode 108 = Alt_R
+keysym Print = ISO_Level3_Shift
