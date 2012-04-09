@@ -80,7 +80,7 @@ myLayoutHook =  avoidStruts $
                 onWorkspace "6-info" infoLayout $ -- for emacs info frames
                 standardLayout
                where
-                 standardLayout = smartBorders $ layoutHook gnomeConfig
+                 standardLayout = smartBorders $ ( layoutHook gnomeConfig ||| Accordion )
                  imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
                  infoLayout = simpleDeco shrinkText defaultTheme Accordion
 
