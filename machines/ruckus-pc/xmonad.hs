@@ -87,6 +87,7 @@ myLayoutHook =  avoidStruts $
 
 myManageHook = composeAll
                [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5),
+                 resource =? "Ediff" --> doSideFloat NE,
                  isInfoWindow --> doShift "6-info"
                ] <+> namedScratchpadManageHook myScratchpads <+> manageHook gnomeConfig
 
