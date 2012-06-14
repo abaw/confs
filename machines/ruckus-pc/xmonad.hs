@@ -92,7 +92,7 @@ myManageHook = composeAll
                ] <+> namedScratchpadManageHook myScratchpads <+> manageHook gnomeConfig
 
 -- applications
-myTerminal = "urxvtc"
+myTerminal = "urxvt"
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs" <&&> fmap not isInfoWindow
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
