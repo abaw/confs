@@ -6,15 +6,15 @@ Emacs*useXIM: false
 xterm*faceName: DejaVu Sans Mono
 xterm*faceNameDoublesize: AR PL UMing TW
 xterm*scrollbar: True
-xterm*background: grey77
-xterm*foreground: black
+xterm*background: grey10
+xterm*foreground: white
 xterm*metaSendsEscape: True
 
 ! for rxvt
 URxvt*font: xft:DejaVu Sans Mono-14,xft:AR PL UMing TW-14
 URxvt*scrollbar: True
-URxvt*background: grey77
-URxvt*foreground: black
+URxvt*background: grey10
+URxvt*foreground: white
 URxvt*meta8: False
 URxvt*scrollBar: False
-URxvt*color10: Green4
+! URxvt*color10: Green4
