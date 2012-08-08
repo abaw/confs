@@ -18,7 +18,12 @@ readlink_r ()
     echo $path
 }
 
-which realpath>/dev/null || die need "realpath" program to run
+realpath ()
+{
+    readlink -f "$1"
+}
+
+which readlink>/dev/null || die need "readlink" program to run
 
 machine=$1
 test -z $machine && die "Usage: $0 <machine>"
