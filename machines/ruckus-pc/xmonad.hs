@@ -51,7 +51,7 @@ myConfig = gnomeConfig
 
 myKeyBindings =
     [ ("M-e", emacs)
-    , ("M-b", opera)
+    , ("M-b", firefox)
     , ("M-S-b", chrome)
     , ("M-c", dedicateTerm)
     , ("M-s", scratchpad)
@@ -96,6 +96,7 @@ myTerminal = "urxvt"
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs" <&&> fmap not isInfoWindow
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
+firefox = runOrRaiseNext "firefox" (className =? "Firefox")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
