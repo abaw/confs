@@ -54,9 +54,10 @@ install_conf()
 }
 
 
-for dot_file in $(\ls $top_dir/dotfiles)
+for dot_file in $machine_dir/dotfiles/*
 do
-    install_conf $dot_file ~/.$dot_file
+    dot_file=$(basename $dot_file)
+    install_conf dotfiles/$dot_file ~/.$dot_file
 done
 
 if test -f $machine_dir/install.sh; then
