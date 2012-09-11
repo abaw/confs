@@ -1,7 +1,7 @@
 import Control.Monad
 import System.Process (system)
 import System.IO
-import Data.List (isPrefixOf)
+import Data.List (isPrefixOf, stripPrefix)
 import XMonad
 import XMonad.Core
 import XMonad.Prompt
@@ -54,6 +54,7 @@ myKeyBindings =
     , ("M-b", firefox)
     , ("M-S-b", chrome)
     , ("M-c", dedicateTerm)
+    , ("M-S-c", nextTerminal)
     , ("M-s", scratchpad)
 --    , ("M-d", namedScratchpadAction myScratchpads "dict")
     , ("M-\\", nextScreen)
@@ -88,6 +89,13 @@ myManageHook = composeAll
 
 -- applications
 myTerminal = "urxvt"
+nextTerminal = raiseNext $ isTerminal <&&> (fmap not (resource =? "scratchpad"))
+               where
+                 isTerminal = do
+                   cmd <- stringProperty "WM_COMMAND"
+                   return $ case (stripPrefix myTerminal cmd) of
+                     Nothing -> False
+                     Just _ -> True
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
