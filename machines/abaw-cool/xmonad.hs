@@ -56,7 +56,8 @@ myKeyBindings =
     , ("M-c", dedicateTerm)
     , ("M-S-c", nextTerminal)
     , ("M-s", scratchpad)
---    , ("M-d", namedScratchpadAction myScratchpads "dict")
+    , ("M-d", namedScratchpadAction myScratchpads "dict")
+    , ("M-m", namedScratchpadAction myScratchpads "mail")
     , ("M-\\", nextScreen)
     , ("M-w", gotoMenu)
     , ("M-S-w", bringMenu)
@@ -99,10 +100,12 @@ nextTerminal = raiseNext $ isTerminal <&&> (fmap not (resource =? "scratchpad"))
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
-firefox = runOrRaiseNext "firefox" (className =? "Firefox")
+firefox = runOrRaiseNext (cmdRungFirefoxProfile "default") (isFirefoxWithProfile "default")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
+
+cmdRungFirefoxProfile profile = "firefox -no-remote -p " ++ profile
 
 -- drawOnFocusWindow = gets windowset >>= peek
 
@@ -125,8 +128,12 @@ focusLastWindow = focusUpTaggedGlobal "last-window"
 -- scratchpads
 myScratchpads =
     [
-     -- NS "dict" "conkeror" (className =? "Conkeror") bigFloating,
-     NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating
+     NS "dict" (cmdRungFirefoxProfile "DICT") (isFirefoxWithProfile "DICT") bigFloating,
+     NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating,
+     NS "mail" (cmdRungFirefoxProfile "MAIL") (isFirefoxWithProfile "MAIL") bigFloating
     ] where
     bigFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
     wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
+
+isFirefoxWithProfile :: String -> Query Bool
+isFirefoxWithProfile profile = (className =? "Firefox") <&&> fmap (isPrefixOf $ profile ++ "#") title
