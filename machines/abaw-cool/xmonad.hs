@@ -53,8 +53,8 @@ myKeyBindings =
     [ ("M-e", emacs)
     , ("M-b", firefox)
     , ("M-S-b", chrome)
-    , ("M-c", dedicateTerm)
-    , ("M-S-c", nextTerminal)
+    , ("M-S-c", dedicateTerm)
+    , ("M-c", nextTerminal)
     , ("M-s", scratchpad)
     , ("M-d", namedScratchpadAction myScratchpads "dict")
     , ("M-m", namedScratchpadAction myScratchpads "mail")
@@ -90,19 +90,27 @@ myManageHook = composeAll
 
 -- applications
 myTerminal = "urxvt"
-nextTerminal = raiseNext $ isTerminal <&&> (fmap not (resource =? "scratchpad"))
-               where
-                 isTerminal = do
-                   cmd <- stringProperty "WM_COMMAND"
-                   return $ case (stripPrefix myTerminal cmd) of
-                     Nothing -> False
-                     Just _ -> True
+nextTerminal = withFocused $ \w ->
+  do alreadyFocsuedTerminal <- runQuery isNormalTerminal w
+     if alreadyFocsuedTerminal
+       then raiseNextTerminal
+       else raiseLastTerminal
+  where raiseLastTerminal = raiseMaybe raiseNextTerminal isLastTerminal
+        raiseNextTerminal = raiseNext isNormalTerminal >> withFocused addLastTerminalTag
+        isNormalTerminal = isTerminal <&&> isNotScratchpad
+        isTerminal = do
+          cmd <- stringProperty "WM_COMMAND"
+          return $ case (stripPrefix myTerminal cmd) of
+            Nothing -> False
+            Just _ -> True
+        isNotScratchpad = fmap not (resource =? "scratchpad")
+
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
 firefox = runOrRaiseNext (cmdRungFirefoxProfile "default") (isFirefoxWithProfile "default")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
-dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate")
+dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate") >> withFocused addLastTerminalTag
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 
 cmdRungFirefoxProfile profile = "firefox -no-remote -p " ++ profile
@@ -137,3 +145,10 @@ myScratchpads =
 
 isFirefoxWithProfile :: String -> Query Bool
 isFirefoxWithProfile profile = (className =? "Firefox") <&&> fmap (isPrefixOf $ profile ++ "#") title
+
+addLastTerminalTag :: Window -> X ()
+addLastTerminalTag w = removeLastTerminalTag >> addTag "last-terminal" w
+                       where removeLastTerminalTag = withTagged "last-terminal" $ delTag "last-terminal"
+
+isLastTerminal :: Query Bool
+isLastTerminal = ask >>= liftX . hasTag "last-terminal"
