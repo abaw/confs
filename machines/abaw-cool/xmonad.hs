@@ -108,12 +108,12 @@ nextTerminal = withFocused $ \w ->
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
-firefox = runOrRaiseNext (cmdRungFirefoxProfile "default") (isFirefoxWithProfile "default")
+firefox = runOrRaiseNext (cmdRunFirefoxProfile "default") (isFirefoxWithProfile "default")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate") >> withFocused addLastTerminalTag
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 
-cmdRungFirefoxProfile profile = "firefox -no-remote -p " ++ profile
+cmdRunFirefoxProfile profile = "firefox -no-remote -p " ++ profile
 
 -- drawOnFocusWindow = gets windowset >>= peek
 
@@ -136,9 +136,9 @@ focusLastWindow = focusUpTaggedGlobal "last-window"
 -- scratchpads
 myScratchpads =
     [
-     NS "dict" (cmdRungFirefoxProfile "DICT") (isFirefoxWithProfile "DICT") bigFloating,
+     NS "dict" (cmdRunFirefoxProfile "DICT") (isFirefoxWithProfile "DICT") bigFloating,
      NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating,
-     NS "mail" (cmdRungFirefoxProfile "MAIL") (isFirefoxWithProfile "MAIL") bigFloating
+     NS "mail" (cmdRunFirefoxProfile "MAIL") (isFirefoxWithProfile "MAIL") bigFloating
     ] where
     bigFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
     wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
