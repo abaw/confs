@@ -39,7 +39,7 @@ myConfig = gnomeConfig
        , terminal = myTerminal
        , manageHook = myManageHook
        , focusFollowsMouse = False
-       , workspaces = ["1","2","3","4","5","6","7","8"]
+       , workspaces = ["1","2","3","4","5","6","7-im","8"]
        , layoutHook = myLayoutHook
        , logHook = updateLastWindow
        -- , logHook = dynamicLogWithPP xmobarPP
@@ -78,9 +78,12 @@ mySubmap = submap $ mkKeymap myConfig $
            ] ++ sharedKeyBindgs
 
 myLayoutHook =  avoidStruts $
+                onWorkspace "7-im" imLayout $
                 standardLayout
                where
                  standardLayout = smartBorders $ ( layoutHook gnomeConfig ||| Accordion )
+                 imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
+                 -- not "ConversationsWindow"
 
 
 myManageHook = composeAll
