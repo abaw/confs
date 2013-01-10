@@ -103,9 +103,7 @@ nextTerminal = withFocused $ \w ->
         isNormalTerminal = isTerminal <&&> isNotScratchpad
         isTerminal = do
           cmd <- stringProperty "WM_COMMAND"
-          return $ case (stripPrefix myTerminal cmd) of
-            Nothing -> False
-            Just _ -> True
+          return $ maybe False (const True) $ stripPrefix myTerminal cmd
         isNotScratchpad = fmap not (resource =? "scratchpad")
 
 emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
@@ -155,3 +153,5 @@ addLastTerminalTag w = removeLastTerminalTag >> addTag "last-terminal" w
 
 isLastTerminal :: Query Bool
 isLastTerminal = ask >>= liftX . hasTag "last-terminal"
+
+
