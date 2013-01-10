@@ -63,6 +63,7 @@ myKeyBindings =
     , ("M-S-w", bringMenu)
     , ("M-u", focusUrgent)
     , ("M-/", focusLastWindow)
+    , ("M-C-w", kill)
     , ("<F20>", mySubmap)
     ]
 
