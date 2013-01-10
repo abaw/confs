@@ -29,7 +29,6 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
 
 
-
 main = do
   xmonad $ withUrgencyHook NoUrgencyHook
          $ myConfig
