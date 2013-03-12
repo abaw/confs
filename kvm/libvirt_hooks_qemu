@@ -1,0 +1,35 @@
+#!/bin/bash -x
+CONF=/etc/libvirt/port_forwarding.conf
+
+GUEST_NAME=$1
+EVENT=$2
+
+GUEST_CONF=$(sed -e'/^#/d' < $CONF| egrep "^${GUEST_NAME}\\b")
+
+if [ -n "$GUEST_CONF" ];then
+	set $GUEST_CONF
+	shift
+	GUEST_IP=$1
+	shift
+	if [[ $EVENT = "stopped" || $EVENT = "reconnect" ]];then
+		for PORT_PAIR in $*;do
+			PORT_ARRAY=( $(sed -e's/,/ /' <<<"$PORT_PAIR") )
+			GUEST_PORT=${PORT_ARRAY[0]}
+			HOST_PORT=${PORT_ARRAY[1]}
+			iptables -t nat -D PREROUTING -p tcp --dport $HOST_PORT -j DNAT --to $GUEST_IP:$GUEST_PORT
+			iptables -D FORWARD -d $GUEST_IP/32 -p tcp -m state --state NEW,RELATED,ESTABLISHED -m tcp --dport $GUEST_PORT -j ACCEPT
+			iptables -t nat -D OUTPUT -p tcp -o lo --dport $HOST_PORT -j DNAT --to $GUEST_IP:$GUEST_PORT
+		done
+	fi
+	if [[ $EVENT = "start" || $EVENT = "reconnect" ]];then
+		for PORT_PAIR in $*;do
+			PORT_ARRAY=( $(sed -e's/,/ /' <<<"$PORT_PAIR") )
+			GUEST_PORT=${PORT_ARRAY[0]}
+			HOST_PORT=${PORT_ARRAY[1]}
+			iptables -t nat -I PREROUTING -p tcp --dport $HOST_PORT -j DNAT --to $GUEST_IP:$GUEST_PORT
+			iptables -I FORWARD -d $GUEST_IP/32 -p tcp -m state --state NEW,RELATED,ESTABLISHED -m tcp --dport $GUEST_PORT -j ACCEPT
+			iptables -t nat -I OUTPUT -p tcp -o lo --dport $HOST_PORT -j DNAT --to $GUEST_IP:$GUEST_PORT
+		done
+	fi
+fi
+
