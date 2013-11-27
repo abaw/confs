@@ -2,6 +2,8 @@ import Control.Monad
 import System.Process (system)
 import System.IO
 import Data.List (isPrefixOf, stripPrefix)
+import Data.Functor ((<$>))
+import Data.Maybe
 import XMonad
 import XMonad.Core
 import XMonad.Prompt
@@ -54,6 +56,7 @@ myKeyBindings =
     , ("M-S-b", chrome)
     , ("M-S-c", dedicateTerm)
     , ("M-c", nextTerminal)
+    --, ("M-a", raiseLastMaybe (unsafeSpawn "emacs") $ className =? "Emacs")
     , ("M-s", scratchpad)
     , ("M-d", namedScratchpadAction myScratchpads "dict")
     , ("M-m", namedScratchpadAction myScratchpads "mail")
@@ -64,6 +67,7 @@ myKeyBindings =
     , ("M-/", focusLastWindow)
     , ("M-C-c", kill)
     , ("<F20>", mySubmap)
+    , ("M-.", tagPrompt defaultXPConfig (\s -> withFocused (addTag s)))
     ]
 
 sharedKeyBindgs = do
@@ -91,6 +95,32 @@ myManageHook = composeAll
                  resource =? "Ediff" --> doSideFloat NE
                ] <+> namedScratchpadManageHook myScratchpads <+> manageHook gnomeConfig
 
+-- Switches to the window satisfying the given query. If current focused window
+-- satisifies the query, it acts like raiseNext. Otherwise it switches to the
+-- one that we used lastly.
+raiseLast :: Query Bool -> X ()
+raiseLast = raiseLastMaybe $ return ()
+
+-- Like raiseLast, but its first argument is an X to be run if no any windows satisifying the query.
+raiseLastMaybe :: X () -> Query Bool -> X ()
+raiseLastMaybe = undefined
+--raiseLastMaybe spawn qry = ifWindows qry raiseOne' spawn
+--  where
+--    raiseOne' :: [Window] -> X ()
+--    raiseOne' [w] = raiseAndTag w
+--    raiseOne' ws = do
+--      foc <- withWindowSet $ return . W.peek
+--      lastW <- case foc of
+--          Nothing -> return $ head ws
+--          Just foc' -> if foc' `elem` ws
+--                       then return $ nextW foc' ws
+--                       else maybe (head ws) head . listToMaybe <$> filterM (runQuery hasLastTag) ws
+--      raiseAndTag lastW
+--    hasLastTag = ask >>= liftX . hasTag "last"
+--    raiseAndTag w = focus w >> addTag "last" w
+--    nextW w ws = let (_:y:_) = dropWhile (/= w) $ cycle ws
+--                 in y
+--
 -- applications
 myTerminal = "urxvt"
 nextTerminal = withFocused $ \w ->
@@ -106,10 +136,10 @@ nextTerminal = withFocused $ \w ->
           return $ maybe False (const True) $ stripPrefix myTerminal cmd
         isNotScratchpad = fmap not (resource =? "scratchpad")
 
-emacs = runOrRaiseNext "emacs" $ className =? "Emacs"
+emacs = runOrRaiseNext "emacsclient -c" $ className =? "Emacs"
 
 opera = runOrRaiseNext "opera" (className =? "Opera")
-firefox = runOrRaiseNext (cmdRunFirefoxProfile "default") (isFirefoxWithProfile "default")
+firefox = raiseNext (hasTag' "firefox")
 chrome = runOrRaiseNext "google-chrome" (className =? "Google-chrome")
 dedicateTerm = raiseMaybe (unsafeSpawn "urxvt -name urxvt-dedicate") (resource =? "urxvt-dedicate") >> withFocused addLastTerminalTag
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
@@ -137,15 +167,12 @@ focusLastWindow = focusUpTaggedGlobal "last-window"
 -- scratchpads
 myScratchpads =
     [
-     NS "dict" (cmdRunFirefoxProfile "DICT") (isFirefoxWithProfile "DICT") bigFloating,
+     NS "dict" (cmdRunFirefoxProfile "DICT") (hasTag' "dict") bigFloating,
      NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating,
-     NS "mail" (cmdRunFirefoxProfile "MAIL") (isFirefoxWithProfile "MAIL") bigFloating
+     NS "mail" (cmdRunFirefoxProfile "MAIL") (hasTag' "mail") bigFloating
     ] where
     bigFloating = customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)
     wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
-
-isFirefoxWithProfile :: String -> Query Bool
-isFirefoxWithProfile profile = (className =? "Firefox") <&&> fmap (isPrefixOf $ profile ++ "#") title
 
 addLastTerminalTag :: Window -> X ()
 addLastTerminalTag w = removeLastTerminalTag >> addTag "last-terminal" w
@@ -153,5 +180,8 @@ addLastTerminalTag w = removeLastTerminalTag >> addTag "last-terminal" w
 
 isLastTerminal :: Query Bool
 isLastTerminal = ask >>= liftX . hasTag "last-terminal"
+
+hasTag' :: String -> Query Bool
+hasTag' s = ask >>= liftX . hasTag s
 
 
