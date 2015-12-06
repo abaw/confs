@@ -1,0 +1,1 @@
+../ruckus-pc/install.sh
