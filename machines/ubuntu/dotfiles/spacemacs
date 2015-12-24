@@ -44,7 +44,7 @@ values."
    ;; configuration in `dotspacemacs/config'.
    dotspacemacs-additional-packages '()
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(smartparens)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -197,9 +197,7 @@ user code."
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (mapc 'spacemacs/helm-gtags-define-keys-for-mode
-        '(c-mode c++-mode))
-
-)
+        '(c-mode c++-mode)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
