@@ -23,8 +23,8 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;; auto-completion
-     ;; better-defaults
+     auto-completion
+     better-defaults
      emacs-lisp
      git
      markdown
@@ -33,6 +33,7 @@ values."
             shell-default-shell 'shell
             shell-default-height 30
             shell-default-position 'bottom)
+     gtags
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
@@ -195,6 +196,9 @@ user code."
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+  (mapc 'spacemacs/helm-gtags-define-keys-for-mode
+        '(c-mode c++-mode))
+
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
