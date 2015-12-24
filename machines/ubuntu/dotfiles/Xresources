@@ -1,1 +1,17 @@
-../../common/dotfiles/Xresources
+! XTERM
+! xterm*font: -*-fixed-medium-r-normal--18-*
+xterm*faceName: DejaVu Sans Mono
+xterm*faceNameDoublesize: AR PL UMing TW
+xterm*scrollbar: True
+xterm*background: grey10
+xterm*foreground: white
+xterm*metaSendsEscape: True
+
+! for rxvt
+URxvt*font: xft:DejaVu Sans Mono-14,xft:AR PL UMing TW-14
+URxvt*scrollbar: True
+URxvt*background: grey10
+URxvt*foreground: white
+URxvt*meta8: False
+URxvt*scrollBar: False
+! URxvt*color10: Green4
