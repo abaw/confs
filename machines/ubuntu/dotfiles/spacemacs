@@ -195,7 +195,8 @@ user code."
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (mapc 'spacemacs/helm-gtags-define-keys-for-mode
-        '(c-mode c++-mode)))
+        '(c-mode c++-mode))
+  (global-set-key (kbd "C-c g") 'goto-line))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
