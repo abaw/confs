@@ -5,6 +5,8 @@ import           Data.List                   (stripPrefix)
 import           Data.Maybe                  (isJust, isNothing)
 import           System.IO                   (Handle, hPutStrLn, stderr)
 import           XMonad
+import           XMonad.Actions.GridSelect   (defaultGSConfig,
+                                              runSelectedAction)
 import           XMonad.Actions.WindowGo     (raiseMaybe, raiseNext,
                                               runOrRaiseNext)
 import qualified XMonad.Hooks.DynamicLog     as DL
@@ -44,7 +46,12 @@ myKeyBindings =
         , ("M-/", focusLastWindow)
         , ("M-S-c", dedicatedTerm)
         , ("M-c", nextTerminal)
+        , ("M-'", runSelectedAction defaultGSConfig menu)
         ]
+
+menu =
+  [ ("Lock", safeSpawn "xautolock" ["-locknow"])
+  ]
 
 myLayoutHook = avoidStruts $ standardLayout
   where
