@@ -56,7 +56,7 @@ dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (res
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
--- - if current window is a termina, then jump to next terminal.
+-- - if current window is a terminal, then jump to next terminal.
 nextTerminal = withFocused $ \w -> do
                  t <- runQuery isTerminal w
                  if t
