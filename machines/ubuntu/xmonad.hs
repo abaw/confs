@@ -5,13 +5,16 @@ import           Data.List                   (stripPrefix)
 import           Data.Maybe                  (isJust, isNothing)
 import           System.IO                   (Handle, hPutStrLn, stderr)
 import           XMonad
-import           XMonad.Actions.GridSelect   (defaultGSConfig,
+import           XMonad.Actions.GridSelect   (GSConfig (..), defaultGSConfig,
                                               runSelectedAction)
+import           XMonad.Actions.TagWindows   (addTag, hasTag, tagPrompt, unTag,
+                                              withTaggedGlobal)
 import           XMonad.Actions.WindowGo     (raiseMaybe, raiseNext,
                                               runOrRaiseNext)
 import qualified XMonad.Hooks.DynamicLog     as DL
 import           XMonad.Hooks.ManageDocks    (avoidStruts, manageDocks)
 import           XMonad.Layout.NoBorders     (smartBorders)
+import           XMonad.Prompt               (defaultXPConfig)
 import qualified XMonad.Util.ExtensibleState as XS
 import           XMonad.Util.EZConfig        (additionalKeysP)
 import           XMonad.Util.Run             (safeSpawn, spawnPipe)
@@ -40,17 +43,24 @@ main = do
 
 myTerminal = "urxvt"
 
+myGSConfig = defaultGSConfig { gs_cellwidth = 200 }
+
 myKeyBindings =
         [ ("M-b", chrome)
         , ("M-e", emacs)
         , ("M-/", focusLastWindow)
         , ("M-S-c", dedicatedTerm)
         , ("M-c", nextTerminal)
-        , ("M-'", runSelectedAction defaultGSConfig menu)
+        , ("M-'", runSelectedAction myGSConfig menu)
+        , ("M-C-c", kill)
+        , ("M-.", tagPrompt defaultXPConfig (withFocused . addTag ))
+        , ("M-m", mail)
+        , ("M-d", dict)
         ]
 
 menu =
-  [ ("Lock", safeSpawn "xautolock" ["-locknow"])
+  [ ("Lock Desktop", safeSpawn "xautolock" ["-locknow"])
+  , ("Remove Window Tags", withFocused unTag)
   ]
 
 myLayoutHook = avoidStruts $ standardLayout
@@ -60,6 +70,8 @@ myLayoutHook = avoidStruts $ standardLayout
 chrome = runOrRaiseNext "google-chrome" (className =? "google-chrome")
 emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
+mail = raiseNext (hasTag' "mail")
+dict = raiseNext (hasTag' "dict")
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
@@ -108,3 +120,6 @@ isTerminal = return . isJust . stripPrefix myTerminal =<< stringProperty "WM_COM
 
 isScratch :: Query Bool
 isScratch = return False
+
+hasTag' :: String -> Query Bool
+hasTag' s = ask >>= liftX . hasTag s
