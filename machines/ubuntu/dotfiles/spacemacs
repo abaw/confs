@@ -42,7 +42,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(dired+ multiple-cursors)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(smartparens)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -184,6 +184,8 @@ values."
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
    dotspacemacs-default-package-repository nil
+   ;; show trailing spaces by default
+   show-trailing-whitespace t
    ))
 
 (defun dotspacemacs/user-init ()
@@ -192,13 +194,39 @@ It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
   )
 
+(defun ska-point-to-register()
+  "Store cursorposition _fast_ in a register.
+  Use ska-jump-to-register to jump back to the stored position."
+  (interactive)
+  (point-to-register 8))
+
+(defun ska-jump-to-register()
+  "Switches between current cursorposition and position
+  that was stored with ska-point-to-register."
+  (interactive)
+  (let ((tmp (point-marker)))
+    (jump-to-register 8)
+    (set-register 8 tmp)))
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+  ;; gtags for a few major modes
   (mapc 'spacemacs/helm-gtags-define-keys-for-mode
         '(c-mode c++-mode))
-  (global-set-key (kbd "C-c g") 'goto-line))
+  ;; a few global key bindings
+  (global-set-key (kbd "C-c g") 'goto-line)
+  (global-set-key (kbd "C-2") 'set-mark-command)
+  (global-set-key (kbd "C-c r") 'font-lock-fontify-buffer)
+  (global-set-key (kbd "C-.") 'ska-point-to-register)
+  (global-set-key (kbd "C-,") 'ska-jump-to-register)
+
+  ;; mc/edit-lines does not work if invoked through helm-M-x
+  (global-set-key (kbd "C-:") 'mc/edit-lines)
+
+  ;; highlight matching parens
+  (show-paren-mode t))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
