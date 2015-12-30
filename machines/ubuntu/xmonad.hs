@@ -13,10 +13,18 @@ import           XMonad.Actions.WindowGo     (raiseMaybe, raiseNext,
                                               runOrRaiseNext)
 import qualified XMonad.Hooks.DynamicLog     as DL
 import           XMonad.Hooks.ManageDocks    (avoidStruts, manageDocks)
+import           XMonad.Hooks.ManageHelpers  (Side (..), doRectFloat)
+import           XMonad.Layout.IM            (Property (..), gridIM)
 import           XMonad.Layout.NoBorders     (smartBorders)
+import           XMonad.Layout.PerWorkspace  (onWorkspace)
 import           XMonad.Prompt               (defaultXPConfig)
+import qualified XMonad.StackSet             as W
 import qualified XMonad.Util.ExtensibleState as XS
 import           XMonad.Util.EZConfig        (additionalKeysP)
+import           XMonad.Util.NamedScratchpad (NamedScratchpad (..),
+                                              customFloating,
+                                              namedScratchpadAction,
+                                              namedScratchpadManageHook)
 import           XMonad.Util.Run             (safeSpawn, spawnPipe)
 
 data MyState = MyState
@@ -35,8 +43,9 @@ main = do
         xmonad $ defaultConfig
                 { modMask = mod5Mask
                 , focusFollowsMouse = False
+                , workspaces = ["1","2","3","4","5","6","7-im","8"]
                 , terminal = myTerminal
-                , manageHook = manageDocks <+> manageHook defaultConfig
+                , manageHook = myManageHook
                 , layoutHook = myLayoutHook
                 , logHook = updateXmobar xmobarH >> updateLastWindow >> updateLastTerminal
                 } `additionalKeysP` myKeyBindings
@@ -53,19 +62,26 @@ myKeyBindings =
         , ("M-c", nextTerminal)
         , ("M-'", runSelectedAction myGSConfig menu)
         , ("M-C-c", kill)
-        , ("M-.", tagPrompt defaultXPConfig (withFocused . addTag ))
         , ("M-m", mail)
         , ("M-d", dict)
+        , ("M-s", scratchpad)
         ]
 
 menu =
   [ ("Lock Desktop", safeSpawn "xautolock" ["-locknow"])
+  , ("Add Window Tag", tagPrompt defaultXPConfig (withFocused . addTag ))
   , ("Remove Window Tags", withFocused unTag)
   ]
 
-myLayoutHook = avoidStruts $ standardLayout
+myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
+                          , namedScratchpadManageHook myScratchpads
+                          , manageDocks
+                          , manageHook defaultConfig
+                          ]
+myLayoutHook = avoidStruts $ onWorkspace "7-im" imLayout $ standardLayout
   where
         standardLayout = smartBorders $ layoutHook defaultConfig
+        imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
 
 chrome = runOrRaiseNext "google-chrome" (className =? "google-chrome")
 firefox = runOrRaiseNext "ferefox" (className =? "Firefox")
@@ -73,6 +89,7 @@ emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
 mail = raiseNext (hasTag' "mail")
 dict = raiseNext (hasTag' "dict")
+scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
@@ -124,3 +141,9 @@ isScratch = return False
 
 hasTag' :: String -> Query Bool
 hasTag' s = ask >>= liftX . hasTag s
+
+myScratchpads =
+    [ NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating
+    ]
+  where
+    wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
