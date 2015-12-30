@@ -94,13 +94,15 @@ scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
 -- - if current window is a terminal, then jump to next terminal.
+-- - scratchpads are excluded from terminals
 nextTerminal = withFocused $ \w -> do
-                 t <- runQuery isTerminal w
+                 t <- runQuery isTerminal' w
                  if t
                  then raiseNextTerminal
                  else raiseLastTerminal
   where
-    raiseNextTerminal = raiseNext isTerminal
+    isTerminal' = isTerminal <&&> (fmap not (resource =? "scratchpad"))
+    raiseNextTerminal = raiseNext isTerminal'
     raiseLastTerminal = do
       w <- XS.gets msLastTerminal
       case w of
