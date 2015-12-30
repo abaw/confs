@@ -46,7 +46,7 @@ myTerminal = "urxvt"
 myGSConfig = defaultGSConfig { gs_cellwidth = 200 }
 
 myKeyBindings =
-        [ ("M-b", chrome)
+        [ ("M-b", firefox)
         , ("M-e", emacs)
         , ("M-/", focusLastWindow)
         , ("M-S-c", dedicatedTerm)
@@ -68,6 +68,7 @@ myLayoutHook = avoidStruts $ standardLayout
         standardLayout = smartBorders $ layoutHook defaultConfig
 
 chrome = runOrRaiseNext "google-chrome" (className =? "google-chrome")
+firefox = runOrRaiseNext "ferefox" (className =? "Firefox")
 emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
 mail = raiseNext (hasTag' "mail")
