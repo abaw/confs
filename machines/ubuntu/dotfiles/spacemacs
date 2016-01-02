@@ -184,8 +184,8 @@ values."
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
    dotspacemacs-default-package-repository nil
-   ;; show trailing spaces by default
-   show-trailing-whitespace t
+   ;; Make these characters easily visible: tabs, newlines and trailing spaces
+   whitespace-style '(face tabs trailing newline tab-mark newline-mark)
    ))
 
 (defun dotspacemacs/user-init ()
@@ -226,7 +226,9 @@ layers configuration. You are free to put any user code."
   (global-set-key (kbd "C-:") 'mc/edit-lines)
 
   ;; highlight matching parens
-  (show-paren-mode t))
+  (show-paren-mode t)
+  ;; whitespace-mode
+  (global-whitespace-mode 1))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
