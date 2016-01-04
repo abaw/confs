@@ -84,8 +84,8 @@ myLayoutHook = avoidStruts $ onWorkspace "7-im" imLayout $ standardLayout
         standardLayout = smartBorders $ layoutHook defaultConfig
         imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
 
-chrome = runOrRaiseNext "google-chrome" (className =? "google-chrome")
-firefox = runOrRaiseNext "ferefox" (className =? "Firefox")
+chrome = runOrRaiseNext "google-chrome" $ (className =? "google-chrome") <&&> (fmap not isSpecialBrowser)
+firefox = runOrRaiseNext "ferefox" $ (className =? "Firefox") <&&> (fmap not isSpecialBrowser)
 emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
 mail = raiseNext (hasTag' "mail")
@@ -146,6 +146,9 @@ isScratch = resource =? "scratchpad"
 
 hasTag' :: String -> Query Bool
 hasTag' s = ask >>= liftX . hasTag s
+
+isSpecialBrowser :: Query Bool
+isSpecialBrowser = (hasTag' "mail") <||> (hasTag' "dict")
 
 myScratchpads =
     [ NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating
