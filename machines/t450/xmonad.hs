@@ -19,6 +19,7 @@ import           XMonad.Hooks.Place          (placeHook, simpleSmart)
 import           XMonad.Layout.IM            (Property (..), gridIM)
 import           XMonad.Layout.NoBorders     (smartBorders)
 import           XMonad.Layout.PerWorkspace  (onWorkspace)
+import           XMonad.Layout.Tabbed        (simpleTabbed)
 import           XMonad.Prompt               (defaultXPConfig)
 import qualified XMonad.StackSet             as W
 import qualified XMonad.Util.ExtensibleState as XS
@@ -86,7 +87,7 @@ myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.R
 myLayoutHook = avoidStruts $ onWorkspace "7-im" imLayout $ standardLayout
   where
         standardLayout = smartBorders $ layoutHook defaultConfig
-        imLayout = gridIM (1/8) $ And (ClassName "Skype") (Role "MainWindow")
+        imLayout = simpleTabbed
 
 chrome = runOrRaiseNext "google-chrome" $ (className =? "google-chrome") <&&> (fmap not isSpecialBrowser)
 firefox = runOrRaiseNext "ferefox" $ (className =? "Firefox") <&&> (fmap not isSpecialBrowser)
