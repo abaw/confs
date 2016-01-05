@@ -1,6 +1,5 @@
 #!/bin/bash
 
-PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 if [ -e /home/abaw/.nix-profile/etc/profile.d/nix.sh ]; then . /home/abaw/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
