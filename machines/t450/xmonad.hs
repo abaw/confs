@@ -7,6 +7,7 @@ import           System.IO                   (Handle, hPutStrLn, stderr)
 import           XMonad
 import           XMonad.Actions.GridSelect   (GSConfig (..), defaultGSConfig,
                                               runSelectedAction)
+import           XMonad.Actions.SpawnOn      (manageSpawn, spawnAndDo)
 import           XMonad.Actions.TagWindows   (addTag, hasTag, tagPrompt, unTag,
                                               withTaggedGlobal)
 import           XMonad.Actions.WindowGo     (raiseMaybe, raiseNext,
@@ -14,6 +15,7 @@ import           XMonad.Actions.WindowGo     (raiseMaybe, raiseNext,
 import qualified XMonad.Hooks.DynamicLog     as DL
 import           XMonad.Hooks.ManageDocks    (avoidStruts, manageDocks)
 import           XMonad.Hooks.ManageHelpers  (Side (..), doRectFloat)
+import           XMonad.Hooks.Place          (placeHook, simpleSmart)
 import           XMonad.Layout.IM            (Property (..), gridIM)
 import           XMonad.Layout.NoBorders     (smartBorders)
 import           XMonad.Layout.PerWorkspace  (onWorkspace)
@@ -72,11 +74,13 @@ menu =
   [ ("Lock Desktop", safeSpawn "xautolock" ["-locknow"])
   , ("Add Window Tag", tagPrompt defaultXPConfig (withFocused . addTag ))
   , ("Remove Window Tags", withFocused unTag)
+  , ("Volume Control", volumeControl)
   ]
 
 myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
                           , namedScratchpadManageHook myScratchpads
                           , manageDocks
+                          , manageSpawn
                           , manageHook defaultConfig
                           ]
 myLayoutHook = avoidStruts $ onWorkspace "7-im" imLayout $ standardLayout
@@ -91,6 +95,7 @@ dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (res
 mail = raiseNext (hasTag' "mail")
 dict = raiseNext (hasTag' "dict")
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
+volumeControl = spawnAndDo doFloat "pavucontrol"
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
