@@ -16,7 +16,6 @@ import qualified XMonad.Hooks.DynamicLog     as DL
 import           XMonad.Hooks.ManageDocks    (avoidStruts, manageDocks)
 import           XMonad.Hooks.ManageHelpers  (Side (..), doRectFloat)
 import           XMonad.Hooks.Place          (placeHook, simpleSmart)
-import           XMonad.Layout.IM            (Property (..), gridIM)
 import           XMonad.Layout.NoBorders     (smartBorders)
 import           XMonad.Layout.PerWorkspace  (onWorkspace)
 import           XMonad.Layout.Tabbed        (simpleTabbed)
@@ -122,8 +121,10 @@ updateXmobar h = DL.dynamicLogWithPP DL.xmobarPP
                         }
 
 updateLastWindow :: X ()
-updateLastWindow = withFocused $ XS.modify . go
+updateLastWindow = withFocused $ \w -> whenX (notScratch w) (updateState w)
   where
+        notScratch = runQuery (fmap not isScratch)
+        updateState = XS.modify . go
         go w s = s { msWindows = update w (msWindows s) }
         -- remember at most 2 windows
         update w (x:y) = if w == x then x:y else w:x:y
