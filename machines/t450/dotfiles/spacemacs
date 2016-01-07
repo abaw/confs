@@ -186,6 +186,8 @@ values."
    dotspacemacs-default-package-repository nil
    ;; Make these characters easily visible: tabs, newlines and trailing spaces
    whitespace-style '(face tabs trailing newline tab-mark newline-mark)
+   ;; disable window-numbering-mode default keybindings
+   window-numbering-keymap nil
    ))
 
 (defun dotspacemacs/user-init ()
