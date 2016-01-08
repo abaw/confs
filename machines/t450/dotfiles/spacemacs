@@ -230,7 +230,11 @@ layers configuration. You are free to put any user code."
   ;; highlight matching parens
   (show-paren-mode t)
   ;; whitespace-mode
-  (global-whitespace-mode 1))
+  (global-whitespace-mode 1)
+
+  (use-package cc-styles
+    :config (c-add-style "ame"
+                         '("linux" (c-basic-offset . 3)))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
