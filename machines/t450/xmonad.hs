@@ -75,7 +75,7 @@ menu =
   , ("Add Window Tag", tagPrompt defaultXPConfig (withFocused . addTag ))
   , ("Remove Window Tags", withFocused unTag)
   , ("Volume Control", volumeControl)
-  , ("All Windows", goToSelected defaultGSConfig)
+  , ("All Windows", allWindows)
   ]
 
 myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
@@ -93,10 +93,11 @@ chrome = runOrRaiseNext "google-chrome" $ (className =? "google-chrome") <&&> (f
 firefox = runOrRaiseNext "ferefox" $ (className =? "Firefox") <&&> (fmap not isSpecialBrowser)
 emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
-mail = raiseNext (hasTag' "mail")
-dict = raiseNext (hasTag' "dict")
+mail = raiseNext isMail
+dict = namedScratchpadAction myScratchpads "dict"
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 volumeControl = spawnAndDo doFloat "pavucontrol"
+allWindows = goToSelected defaultGSConfig
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
@@ -152,14 +153,27 @@ isTerminal' = isTerminal <&&> (fmap not isScratch)
 isScratch :: Query Bool
 isScratch = resource =? "scratchpad"
 
+cmdScratch :: String
+cmdScratch = myTerminal ++ " -name scratchpad"
+
+isDict :: Query Bool
+isDict = resource =? "dict"
+
+cmdDict :: String
+cmdDict = "uzbl --name dict http://www.ldoceonline.com/search/"
+
+isMail :: Query Bool
+isMail = hasTag' "mail"
+
 hasTag' :: String -> Query Bool
 hasTag' s = ask >>= liftX . hasTag s
 
 isSpecialBrowser :: Query Bool
-isSpecialBrowser = (hasTag' "mail") <||> (hasTag' "dict")
+isSpecialBrowser = isMail <||> isDict
 
 myScratchpads =
-    [ NS "scratchpad" ( myTerminal ++ " -name scratchpad") (resource =? "scratchpad") wideFloating
+    [ NS "scratchpad" cmdScratch isScratch wideFloating
+    , NS "dict" cmdDict isDict wideFloating
     ]
   where
     wideFloating = customFloating $ W.RationalRect (1/6) (1/3) (2/3) (1/3)
