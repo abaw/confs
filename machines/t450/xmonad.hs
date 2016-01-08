@@ -6,7 +6,7 @@ import           Data.Maybe                  (isJust, isNothing)
 import           System.IO                   (Handle, hPutStrLn, stderr)
 import           XMonad
 import           XMonad.Actions.GridSelect   (GSConfig (..), defaultGSConfig,
-                                              runSelectedAction)
+                                              goToSelected, runSelectedAction)
 import           XMonad.Actions.SpawnOn      (manageSpawn, spawnAndDo)
 import           XMonad.Actions.TagWindows   (addTag, hasTag, tagPrompt, unTag,
                                               withTaggedGlobal)
@@ -75,6 +75,7 @@ menu =
   , ("Add Window Tag", tagPrompt defaultXPConfig (withFocused . addTag ))
   , ("Remove Window Tags", withFocused unTag)
   , ("Volume Control", volumeControl)
+  , ("All Windows", goToSelected defaultGSConfig)
   ]
 
 myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
