@@ -1,14 +1,14 @@
 ! XTERM
 ! xterm*font: -*-fixed-medium-r-normal--18-*
-xterm*faceName: DejaVu Sans Mono
-xterm*faceNameDoublesize: AR PL UMing TW
+xterm*faceName: Source Code Pro
+xterm*faceNameDoublesize: Noto Sans
 xterm*scrollbar: True
 xterm*background: grey10
 xterm*foreground: white
 xterm*metaSendsEscape: True
 
 ! for rxvt
-URxvt*font: xft:DejaVu Sans Mono-14,xft:AR PL UMing TW-14
+URxvt*font: xft:Source Code Pro-14,xft:Noto Sans-14
 URxvt*scrollbar: True
 URxvt*background: grey10
 URxvt*foreground: white
