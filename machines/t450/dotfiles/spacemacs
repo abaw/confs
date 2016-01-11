@@ -42,9 +42,9 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(dired+ multiple-cursors)
+   dotspacemacs-additional-packages '(multiple-cursors paredit)
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '(smartparens)
+   dotspacemacs-excluded-packages '(smartparens evil-lisp-state)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -225,6 +225,10 @@ layers configuration. You are free to put any user code."
    ("C-." . ska-point-to-register)
    ("C-," . ska-jump-to-register)
    ("C-;" . mc/mark-all-dwim))
+
+  (use-package paredit
+    :config (mapc (lambda (h) (add-hook h 'enable-paredit-mode))
+                  '(emacs-lisp-mode-hook ielm-mode-hook lisp-mode-hook lisp-interaction-mode-hook)))
 
   ;; highlight matching parens
   (show-paren-mode t)
