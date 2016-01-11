@@ -217,15 +217,14 @@ layers configuration. You are free to put any user code."
   ;; gtags for a few major modes
   (mapc 'spacemacs/helm-gtags-define-keys-for-mode
         '(c-mode c++-mode))
-  ;; a few global key bindings
-  (global-set-key (kbd "C-c g") 'goto-line)
-  (global-set-key (kbd "C-2") 'set-mark-command)
-  (global-set-key (kbd "C-c r") 'font-lock-fontify-buffer)
-  (global-set-key (kbd "C-.") 'ska-point-to-register)
-  (global-set-key (kbd "C-,") 'ska-jump-to-register)
 
-  ;; mc/edit-lines does not work if invoked through helm-M-x
-  (global-set-key (kbd "C-:") 'mc/edit-lines)
+  (bind-keys*
+   ("C-c g" . goto-line)
+   ("C-2" . set-mark-command)
+   ("C-c r" . font-lock-fontify-buffer)
+   ("C-." . ska-point-to-register)
+   ("C-," . ska-jump-to-register)
+   ("C-;" . mc/mark-all-dwim))
 
   ;; highlight matching parens
   (show-paren-mode t)
