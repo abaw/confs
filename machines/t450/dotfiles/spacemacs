@@ -232,7 +232,7 @@ layers configuration. You are free to put any user code."
   ;; gtags for a few major modes
 
   (bind-keys*
-   ("C-c g" . goto-line)
+   ("C-c g" . avy-goto-line)
    ("C-2" . set-mark-command)
    ("C-c r" . font-lock-fontify-buffer)
    ("C-." . ska-point-to-register)
