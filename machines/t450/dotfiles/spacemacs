@@ -37,6 +37,8 @@ values."
      haskell
      (ibuffer :variables
               ibuffer-group-buffers-by 'projects)
+     c-c++
+     semantic
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -215,8 +217,6 @@ user code."
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   ;; gtags for a few major modes
-  (mapc 'spacemacs/helm-gtags-define-keys-for-mode
-        '(c-mode c++-mode))
 
   (bind-keys*
    ("C-c g" . goto-line)
