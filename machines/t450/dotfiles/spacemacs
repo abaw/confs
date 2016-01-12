@@ -212,6 +212,16 @@ user code."
     (jump-to-register 8)
     (set-register 8 tmp)))
 
+(defvar-local abaw-gtags-libpath nil
+  "The additional GTAGSLIBPATH. It's a list of directory names.
+  You could set this through directory local variables for a
+  project")
+
+(defun abaw/set-gatgs-libpath ()
+  "set environment variable GTAGSLIBPATH according to `abaw-gtags-libpath'"
+  (interactive)
+  (setenv "GTAGSLIBPATH" (mapconcat #'identity abaw-gtags-libpath ":")))
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
