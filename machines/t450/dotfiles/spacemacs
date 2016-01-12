@@ -40,14 +40,16 @@ values."
      (version-control :variables
                       version-control-diff-tool 'git-gutter+
                       version-control-global-margin t)
+     c-c++
+     semantic
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(dired+ multiple-cursors)
+   dotspacemacs-additional-packages '(multiple-cursors paredit)
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '(smartparens)
+   dotspacemacs-excluded-packages '(smartparens evil-lisp-state)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -213,22 +215,33 @@ user code."
     (jump-to-register 8)
     (set-register 8 tmp)))
 
+(defvar-local abaw-gtags-libpath nil
+  "The additional GTAGSLIBPATH. It's a list of directory names.
+  You could set this through directory local variables for a
+  project")
+
+(defun abaw/set-gatgs-libpath ()
+  "set environment variable GTAGSLIBPATH according to `abaw-gtags-libpath'"
+  (interactive)
+  (setenv "GTAGSLIBPATH" (mapconcat #'identity abaw-gtags-libpath ":")))
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   ;; gtags for a few major modes
-  (mapc 'spacemacs/helm-gtags-define-keys-for-mode
-        '(c-mode c++-mode))
-  ;; a few global key bindings
-  (global-set-key (kbd "C-c g") 'goto-line)
-  (global-set-key (kbd "C-2") 'set-mark-command)
-  (global-set-key (kbd "C-c r") 'font-lock-fontify-buffer)
-  (global-set-key (kbd "C-.") 'ska-point-to-register)
-  (global-set-key (kbd "C-,") 'ska-jump-to-register)
 
-  ;; mc/edit-lines does not work if invoked through helm-M-x
-  (global-set-key (kbd "C-:") 'mc/edit-lines)
+  (bind-keys*
+   ("C-c g" . goto-line)
+   ("C-2" . set-mark-command)
+   ("C-c r" . font-lock-fontify-buffer)
+   ("C-." . ska-point-to-register)
+   ("C-," . ska-jump-to-register)
+   ("C-;" . mc/mark-all-dwim))
+
+  (use-package paredit
+    :config (mapc (lambda (h) (add-hook h 'enable-paredit-mode))
+                  '(emacs-lisp-mode-hook ielm-mode-hook lisp-mode-hook lisp-interaction-mode-hook)))
 
   ;; highlight matching parens
   (show-paren-mode t)
