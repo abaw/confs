@@ -5,6 +5,7 @@ import           Data.List                   (stripPrefix)
 import           Data.Maybe                  (isJust, isNothing)
 import           System.IO                   (Handle, hPutStrLn, stderr)
 import           XMonad
+import           XMonad.Actions.CycleWS      (nextScreen)
 import           XMonad.Actions.GridSelect   (GSConfig (..), defaultGSConfig,
                                               goToSelected, runSelectedAction)
 import           XMonad.Actions.SpawnOn      (manageSpawn, spawnAndDo)
@@ -68,6 +69,7 @@ myKeyBindings =
         , ("M-m", mail)
         , ("M-d", dict)
         , ("M-s", scratchpad)
+        , ("M-\\", nextScreen)
         ]
 
 menu =
