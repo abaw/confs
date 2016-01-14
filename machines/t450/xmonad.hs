@@ -78,6 +78,7 @@ menu =
   , ("Remove Window Tags", withFocused unTag)
   , ("Volume Control", volumeControl)
   , ("All Windows", allWindows)
+  , ("Switch Screens Configuration", switchScreenConfiguration)
   ]
 
 myManageHook = composeAll [ resource =? "filechooserdialog" --> doRectFloat (W.RationalRect 0.2 0.3 0.6 0.5)
@@ -100,6 +101,12 @@ dict = namedScratchpadAction myScratchpads "dict"
 scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 volumeControl = spawnAndDo doFloat "pavucontrol"
 allWindows = goToSelected defaultGSConfig
+switchScreenConfiguration = runSelectedAction myGSConfig $
+  [ ("Builtin+External(Primary)", safeSpawn "xrandr" ["--output",  "DP1", "--primary", "--auto", "--output", "eDP1", "--right-of", "DP1", "--auto"])
+  , ("Builtin(Primary)+External", safeSpawn "xrandr" ["--output",  "eDP1", "--primary", "--auto", "--output", "DP1", "--right-of", "eDP1", "--auto"])
+  , ("Builtin", safeSpawn "xrandr" ["--output",  "eDP1", "--auto", "--output", "DP1", "--off"])
+  , ("External", safeSpawn "xrandr" ["--output",  "DP1", "--primary", "--auto", "--output", "eDP1", "--off"])
+  ]
 
 -- Jump to a terminal with these rules:
 -- - if current window is not a terminal, then jump to last focused terminal.
