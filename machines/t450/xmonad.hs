@@ -23,7 +23,7 @@ import           XMonad.Layout.Tabbed        (simpleTabbed)
 import           XMonad.Prompt               (defaultXPConfig)
 import qualified XMonad.StackSet             as W
 import qualified XMonad.Util.ExtensibleState as XS
-import           XMonad.Util.EZConfig        (additionalKeysP)
+import           XMonad.Util.EZConfig        (additionalKeysP, checkKeymap)
 import           XMonad.Util.NamedScratchpad (NamedScratchpad (..),
                                               customFloating,
                                               namedScratchpadAction,
@@ -43,16 +43,17 @@ instance ExtensionClass MyState where
 
 main = do
         xmobarH <- spawnPipe "xmobar"
-        xmonad $ defaultConfig
-                { modMask = mod5Mask
-                , focusFollowsMouse = False
-                , workspaces = ["1","2","3","4","5","6","7-im","8"]
-                , terminal = myTerminal
-                , manageHook = myManageHook
-                , layoutHook = myLayoutHook
-                , logHook = updateXmobar xmobarH >> updateLastWindow >> updateLastTerminal
-		, startupHook = dedicatedTerm
-                } `additionalKeysP` myKeyBindings
+        let config = defaultConfig
+              { modMask = mod5Mask
+              , focusFollowsMouse = False
+              , workspaces = ["1","2","3","4","5","6","7-im","8"]
+              , terminal = myTerminal
+              , manageHook = myManageHook
+              , layoutHook = myLayoutHook
+              , logHook = updateXmobar xmobarH >> updateLastWindow >> updateLastTerminal
+              , startupHook = checkKeymap config myKeyBindings >> dedicatedTerm
+              } `additionalKeysP` myKeyBindings
+        xmonad config
 
 myTerminal = "urxvt"
 
@@ -70,6 +71,8 @@ myKeyBindings =
         , ("M-d", dict)
         , ("M-s", scratchpad)
         , ("M-\\", nextScreen)
+        , ("<XF86MonBrightnessUp>", spawn "xbacklight +10")
+        , ("<XF86MonBrightnessDown>", spawn "xbacklight -10")
         ]
 
 menu =
