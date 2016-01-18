@@ -225,6 +225,26 @@ user code."
   (interactive)
   (setenv "GTAGSLIBPATH" (mapconcat #'identity abaw-gtags-libpath ":")))
 
+(defun abaw/join-path (&rest components)
+  "Join path components into a path and return it. For
+  example, (abaw/join-path \"a\" \"b\" \"c\") returns \"a/b/c\"
+  in unix."
+  (when components
+    (if (cdr components)
+        (concat (file-name-as-directory (car components))
+                (apply 'abaw/join-path (cdr components)))
+      (car components))))
+
+(defun abaw/open-all-files-under-directory-in-project (dir)
+  (interactive "DOpen all files in directory:")
+  (let ((root (projectile-project-root)))
+    (loop for f in (projectile-dir-files-native root dir)
+          when (or (string-match-p ".c\\(pp\\)?$" (downcase f))
+                   (string-match-p ".h\\(pp\\)?$" (downcase f))
+                   (string-match-p "makefile.*$" (downcase f)))
+          do (ignore-errors
+               (find-file-read-only (abaw/join-path root f))))))
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
