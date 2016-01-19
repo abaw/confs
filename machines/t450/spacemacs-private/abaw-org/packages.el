@@ -47,6 +47,16 @@
    ("C-c c" . org-capture)
    ("<f12>" . org-agenda)))
 
+(defun abaw-org/auto-git ()
+  (let ((the-file (expand-file-name (buffer-file-name))))
+    (when (string-suffix-p ".org" the-file)
+      (loop for f in (cons org-default-notes-file org-agenda-files)
+            when (equal the-file (expand-file-name f))
+            do (progn
+                 (message (message "auto git commit for  %s" the-file))
+                 (start-process-shell-command "abaw-org-auto-git" "*abaw-org-auto-git*" (format "git commit -am 'Auto commited by emacs'" )))
+            and return nil))))
+
 (defun abaw-org/post-init-org ()
   "Configure org-mode"
   (setq org-directory "~/orgs")
@@ -62,6 +72,10 @@
              (write-region "#+FILETAGS: REFILE\n" nil f))
         else do (progn (message "Write an empty-line file: %s" f)
                        (write-region "" nil f)))
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook #'abaw-org/auto-git t t)))
 
   (setq org-capture-templates
         '(("t" "Tasks" entry (file "refile.org") "* TODO %?\n:PROPERTIES:\n:ADDED: %U\n:END:\n" :clock-in t :clock-resume t)
