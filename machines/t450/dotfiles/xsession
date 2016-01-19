@@ -15,6 +15,9 @@ nm-applet&
 # lock after 10 minutes of idle
 xautolock -time 10 -locker "xtrlock -b" -notify 10 -notifier "notify-send -t 3000 -i gtk-dialog-info 'Locking in 10 seconds'" &
 
+# disable touchpad
+synclient TouchPadOff=1
+
 eval $(ssh-agent)
 
 exec xmonad
