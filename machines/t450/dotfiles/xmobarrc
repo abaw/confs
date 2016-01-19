@@ -9,10 +9,11 @@ Config { borderColor = "black"
        , hideOnStart = False
        , commands = [ Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
-    		    , Run Date "%a %b %_d %H:%M:%S" "date" 10
-		    , Run StdinReader
+                    , Run Date "%a %b %_d %H:%M:%S" "date" 10
+                    , Run Battery ["-t", "=<acstatus>=<left>%", "-l", "red", "-h", "green"] 10
+                    , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | %memory% <fc=#ee9a00>%date%</fc>"
+       , template = "%StdinReader% }{ %cpu% | %memory% <fc=#ee9a00>%date%</fc>| %battery% "
        }
