@@ -245,6 +245,30 @@ user code."
           do (ignore-errors
                (find-file-read-only (abaw/join-path root f))))))
 
+(defun abaw/helm-compile-from-commands (cmds)
+  "Do `compile' with the selected commands from `cmds'. `cmds' is
+    a list of compile commands. Each element is a string defining
+    what command to execute or this form (directory . command) to
+    indicate the `default-directory' on executing commands."
+    (let ((sources (helm-build-sync-source "compile commands"
+                   :candidates (loop for cmd in cmds
+                                     if (consp cmd) collect (cons (cdr cmd) cmd)
+                                     else collect (cons cmd cmd))
+                   :action (lambda (cmd)
+                             (let ((default-directory (if (consp cmd) (car cmd)
+                                                        default-directory))
+                                   (cmd-string (if (consp cmd) (cdr cmd)
+                                           cmd)))
+                               (compile cmd-string))))))
+      (helm :sources sources)))
+
+(defvar-local abaw-project-compile-commands nil
+  "This is intended to be set using directory local variables.
+  This is the argument to pass to
+  `abaw/helm-compile-from-commands'. You could use it with
+  `projectile-project-compilation-cmd' to customize the
+  compilation commands for a project")
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
