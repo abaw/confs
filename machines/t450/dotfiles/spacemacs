@@ -294,7 +294,7 @@ layers configuration. You are free to put any user code."
 
   (use-package cc-styles
     :config (c-add-style "ame"
-                         '("linux" (c-basic-offset . 3)))))
+                         '("stroustrup" (c-basic-offset . 3)))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
