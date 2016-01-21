@@ -262,7 +262,7 @@ user code."
                                (compile cmd-string))))))
       (helm :sources sources)))
 
-(defvar-local abaw-project-compile-commands nil
+(defvar-local abaw-project-compile-cmds nil
   "This is intended to be set using directory local variables.
   This is the argument to pass to
   `abaw/helm-compile-from-commands'. You could use it with
