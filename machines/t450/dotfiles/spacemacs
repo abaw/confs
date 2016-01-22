@@ -34,7 +34,8 @@ values."
             shell-default-height 30
             shell-default-position 'bottom)
      gtags
-     haskell
+     (haskell :variables
+              haskell-process-type 'stack-ghci)
      (ibuffer :variables
               ibuffer-group-buffers-by 'projects)
      (version-control :variables
