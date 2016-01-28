@@ -295,7 +295,12 @@ layers configuration. You are free to put any user code."
 
   (use-package cc-styles
     :config (c-add-style "ame"
-                         '("stroustrup" (c-basic-offset . 3)))))
+                         '("stroustrup" (c-basic-offset . 3))))
+
+  ;; Overwrite the setting in version-control layer. I like to place this
+  ;; information in left fringe.
+  (use-package git-gutter-fringe+
+    :init (setq git-gutter-fr+-side 'left-fringe)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
