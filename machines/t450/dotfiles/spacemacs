@@ -300,7 +300,9 @@ layers configuration. You are free to put any user code."
   ;; Overwrite the setting in version-control layer. I like to place this
   ;; information in left fringe.
   (use-package git-gutter-fringe+
-    :init (setq git-gutter-fr+-side 'left-fringe)))
+    :init (setq git-gutter-fr+-side 'left-fringe))
+
+  (spacemacs/toggle-mode-line-org-clock-on))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
