@@ -284,6 +284,10 @@ layers configuration. You are free to put any user code."
    ("C-," . ska-jump-to-register)
    ("C-;" . mc/mark-all-dwim))
 
+  ;; I like M-DEL to be `backward-kill-word' or the like
+  (use-package clean-aindent-mode
+    :config (define-key clean-aindent-mode--keymap (kbd "M-DEL") nil))
+
   (use-package paredit
     :config (mapc (lambda (h) (add-hook h 'enable-paredit-mode))
                   '(emacs-lisp-mode-hook ielm-mode-hook lisp-mode-hook lisp-interaction-mode-hook)))
