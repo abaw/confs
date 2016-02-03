@@ -64,6 +64,8 @@
   (setq org-agenda-files
         (mapcar (lambda (f) (abaw-org/join-path org-directory f))
                 (list "todo.org" "diary.org" "refile.org")))
+
+  ;; Create agenda files if they do not exist
   (loop for f in org-agenda-files
         unless (file-exists-p f)
         if (string-suffix-p "refile.org" f)
@@ -72,6 +74,19 @@
              (write-region "#+FILETAGS: REFILE\n" nil f))
         else do (progn (message "Write an empty-line file: %s" f)
                        (write-region "" nil f)))
+
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "MAYBE(m)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d)" "CANCELLED(c@)" "DELEGATED(D@)" )))
+
+  (setq org-todo-state-tags-triggers
+        '((done ("WAITING"))
+          ("TODO" ("WAITING") ("CANCELLED") )
+          ("MAYBE" ("WAITING") ("CANCELLED"))
+          ("WAITING" ("WAITING" . t))
+          ("CANCELLED" ("CANCELLED" . t) ("DELEGATED"))
+          ("DELEGATED" ("DELEGATED" . t) ("CANCELLED"))
+          ("DONE" ("WAITING") ("CANCELLED") ("DELEGATED"))
+          ))
 
   (add-hook 'org-mode-hook
             (lambda ()
