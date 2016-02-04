@@ -16,7 +16,7 @@ import           Turtle
 
 data Config = Config
   { cMonitoredDirs :: [FilePath] -- ^ The directories to monitor for changes
-  , cSuffixes      :: [Text]          -- ^ Suffixes for my interested files
+  , cSuffixes      :: [Text]     -- ^ Suffixes for my interested files
   , cCommand       :: Text       -- ^ The shell command to run on file changes in a directory
   }
   deriving (Show)
@@ -24,7 +24,7 @@ data Config = Config
 parser :: Parser Config
 parser = Config <$> some (optPath "dir" 'd' (Specific "The directories to monitor changes in. You could specify this multiple times."))
                 <*> many (optText "suffix" 's' (Specific "Only changes for files matching the given suffixes trigger the command."))
-                <*> argText "command" (Specific "The shell command to execute on file changes")
+                <*> (fmap T.unwords ( some $ argText "command..." (Specific "The shell command to execute on file changes")))
 
 main = do cfg@(Config dirs _ cmd) <- options "Execute a shell command on file chnages" parser
           print cfg
