@@ -68,8 +68,9 @@ shouldTrigger (Config _ suffixes ignoreEditorFiles _) e =
   where
     p = eventPath' e
     Right p' = toText $ filename $ eventPath' e
-    matchesSuffixes = any (`T.isSuffixOf` p') suffixes
-    matchesEditorFiles = or [ "." `T.isPrefixOf` p' && any (`T.isSuffixOf` p') [".swp", ".swx", ".swpx" ]
+    matchAnySuffixOf = any (`T.isSuffixOf` p')
+    matchesSuffixes = matchAnySuffixOf suffixes
+    matchesEditorFiles = or [ "." `T.isPrefixOf` p' && matchAnySuffixOf [".swp", ".swx", ".swpx" ]
                               -- ^ VIM
                             , ".#" `T.isPrefixOf` p'
                               -- ^ Emacs
