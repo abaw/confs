@@ -9,3 +9,8 @@ cdupto()
     [ $(pwd) == / ] && return 0
     cdupto $1
 }
+
+termTitle()
+{
+    printf "\033k$*\033\\"
+}
