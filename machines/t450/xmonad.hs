@@ -105,8 +105,8 @@ scratchpad = namedScratchpadAction myScratchpads "scratchpad"
 volumeControl = spawnAndDo doFloat "pavucontrol"
 allWindows = goToSelected defaultGSConfig
 switchScreenConfiguration = runSelectedAction myGSConfig $
-  [ ("Builtin+External(Primary)", safeSpawn "xrandr" ["--output",  "DP1", "--primary", "--auto", "--output", "eDP1", "--mode", "1360x768", "--below", "DP1" ])
-  , ("Builtin(Primary)+External", safeSpawn "xrandr" ["--output",  "eDP1", "--primary", "--auto", "--output", "DP1", "--above", "eDP1", "--auto"])
+  [ ("Builtin+External(Primary)", safeSpawn "xrandr" ["--output",  "DP1", "--primary", "--auto", "--output", "eDP1", "--mode", "1360x768", "--right-of", "DP1" ])
+  , ("Builtin(Primary)+External", safeSpawn "xrandr" ["--output",  "eDP1", "--primary", "--auto", "--output", "DP1", "--left-of", "eDP1", "--auto"])
   , ("Builtin", safeSpawn "xrandr" ["--output",  "eDP1", "--auto", "--output", "DP1", "--off"])
   , ("External", safeSpawn "xrandr" ["--output",  "DP1", "--primary", "--auto", "--output", "eDP1", "--off"])
   ]
