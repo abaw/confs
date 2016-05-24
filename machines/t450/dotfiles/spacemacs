@@ -42,6 +42,7 @@ values."
                       version-control-diff-tool 'git-gutter+
                       version-control-global-margin t)
      c-c++
+     python
      abaw-org
      )
    ;; List of additional packages that will be installed without being
