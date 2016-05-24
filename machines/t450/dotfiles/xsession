@@ -3,7 +3,7 @@
 export PATH="$HOME/.local/bin:$PATH"
 if [ -e /home/abaw/.nix-profile/etc/profile.d/nix.sh ]; then . /home/abaw/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-xrandr --output DP1 --primary --auto --output eDP1 --mode 1360x768 --below DP1
+xrandr --output DP1 --primary --auto --output eDP1 --mode 1360x768 --right-of DP1
 
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
