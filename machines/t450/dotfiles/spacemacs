@@ -24,6 +24,7 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
+     syntax-checking
      better-defaults
      emacs-lisp
      git
@@ -34,8 +35,7 @@ values."
             shell-default-height 30
             shell-default-position 'bottom)
      gtags
-     (haskell :variables
-              haskell-process-type 'stack-ghci)
+     intero
      (ibuffer :variables
               ibuffer-group-buffers-by 'projects)
      (version-control :variables
@@ -43,6 +43,7 @@ values."
                       version-control-global-margin t)
      c-c++
      python
+     javascript
      abaw-org
      )
    ;; List of additional packages that will be installed without being
