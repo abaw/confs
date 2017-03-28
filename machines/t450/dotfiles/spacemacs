@@ -35,7 +35,6 @@ values."
             shell-default-height 30
             shell-default-position 'bottom)
      gtags
-     intero
      (ibuffer :variables
               ibuffer-group-buffers-by 'projects)
      (version-control :variables
@@ -44,6 +43,7 @@ values."
      c-c++
      python
      javascript
+     shell-scripts
      abaw-org
      )
    ;; List of additional packages that will be installed without being
