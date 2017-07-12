@@ -95,7 +95,7 @@ myLayoutHook = avoidStruts $ onWorkspace "7-im" imLayout $ standardLayout
         standardLayout = smartBorders $ layoutHook defaultConfig
         imLayout = simpleTabbed
 
-chrome = runOrRaiseNext "google-chrome" $ (className =? "google-chrome") <&&> (fmap not isSpecialBrowser)
+chrome = runOrRaiseNext "google-chrome" $ (resource =? "google-chrome") <&&> (fmap not isSpecialBrowser)
 firefox = runOrRaiseNext "ferefox" $ (className =? "Firefox") <&&> (fmap not isSpecialBrowser)
 emacs = runOrRaiseNext "emacs" (className =? "Emacs")
 dedicatedTerm = raiseMaybe (safeSpawn "urxvt" ["-name", "urxvt-dedicated"]) (resource =? "urxvt-dedicated")
