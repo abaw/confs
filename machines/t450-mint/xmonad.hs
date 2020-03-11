@@ -153,7 +153,7 @@ updateLastTerminal = withFocused $ \w -> do
                        when t $ XS.modify (\s -> s { msLastTerminal = Just w })
 
 isTerminal :: Query Bool
-isTerminal = return . isJust . stripPrefix myTerminal =<< stringProperty "WM_COMMAND"
+isTerminal = (return . isJust . stripPrefix myTerminal =<< stringProperty "WM_COMMAND") <||> (className =? "Mate-terminal")
 
 isTerminal' :: Query Bool
 isTerminal' = isTerminal <&&> (fmap not isScratch)
